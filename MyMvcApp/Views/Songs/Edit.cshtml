@@ -1,0 +1,34 @@
+﻿@model MyMvcApp.Models.Song
+@{
+    ViewData["Title"] = "Sửa bài hát";
+    Layout = "_Layout";
+}
+
+<h2>Sửa bài hát</h2>
+
+<form method="post" asp-action="Edit" asp-route-id="@Model.SongID">
+    <input type="hidden" asp-for="SongID" />
+    <div class="mb-3">
+        <label class="form-label">Tiêu đề</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Ca sĩ</label>
+        <input asp-for="Artist" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">File nhạc (tên file)</label>
+        <input asp-for="FileName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Cover image</label>
+        <input asp-for="CoverImage" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Lời bài hát</label>
+        <textarea asp-for="Lyrics" class="form-control" rows="6"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Hủy</a>
+</form>

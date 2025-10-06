@@ -1,0 +1,92 @@
+﻿@model MyMvcApp.Models.Song
+@{
+    ViewData["Title"] = "Nghe: " + Model.Title;
+    Layout = "_Layout";
+
+    // list of songs passed via ViewData
+    var allSongs = ViewData["AllSongs"] as List<MyMvcApp.Models.Song> ?? new List<MyMvcApp.Models.Song>();
+    var index = allSongs.FindIndex(s => s.SongID == Model.SongID);
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="~/images/@Model.CoverImage" alt="Cover" class="img-fluid" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'"/>
+    </div>
+    <div class="col-md-8">
+        <h2>@Model.Title</h2>
+        <p><strong>Ca sĩ:</strong> @Model.Artist</p>
+        <p><strong>Album:</strong> @Model.Album</p>
+
+        <audio id="audioPlayer" controls style="width:100%;">
+            <source src="~/music/@Model.FileName" type="audio/mpeg" />
+            Trình duyệt không hỗ trợ thẻ audio.
+        </audio>
+
+        <div class="mt-2">
+            <button class="btn btn-secondary" id="prevBtn">⏮️ Trước</button>
+            <button class="btn btn-primary" id="playPauseBtn">▶️ / ⏸️</button>
+            <button class="btn btn-secondary" id="nextBtn">⏭️ Sau</button>
+
+            <label class="ms-3">Âm lượng</label>
+            <input id="volume" type="range" min="0" max="1" step="0.01" value="1" style="width:150px;" />
+        </div>
+
+        <h4 class="mt-4">Lời bài hát</h4>
+        <pre style="white-space: pre-wrap;">@Model.Lyrics</pre>
+    </div>
+</div>
+@section Scripts {
+<script>
+    const player = document.getElementById('audioPlayer');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const volume = document.getElementById('volume');
+
+    // Playlist from server
+    const playlist = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        allSongs.Select(s => new {
+            id = s.SongID,
+            file = Url.Content("~/music/" + s.FileName),
+            url = Url.Action("Player", "Songs", new { id = s.SongID })
+        })
+    ));
+
+    // find current index
+    let currentIndex = @index;
+
+    playPauseBtn.addEventListener('click', () => {
+        if (player.paused) player.play();
+        else player.pause();
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            const nextSong = playlist[currentIndex - 1];
+            window.location.href = nextSong.url;
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentIndex < playlist.length - 1) {
+            const nextSong = playlist[currentIndex + 1];
+            window.location.href = nextSong.url;
+        }
+    });
+
+    volume.addEventListener('input', (e) => {
+        player.volume = e.target.value;
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            if (player.paused) player.play(); else player.pause();
+        } else if (e.code === 'ArrowRight') {
+            nextBtn.click();
+        } else if (e.code === 'ArrowLeft') {
+            prevBtn.click();
+        }
+    });
+</script>
+}

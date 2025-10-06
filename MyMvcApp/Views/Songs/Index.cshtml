@@ -1,0 +1,36 @@
+﻿@model IEnumerable<MyMvcApp.Models.Song>
+@{
+    ViewData["Title"] = "Danh sách bài hát";
+    Layout = "_Layout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Danh sách bài hát</h2>
+    <a class="btn btn-primary" href="@Url.Action("Create")">+ Thêm bài hát</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Tên</th>
+            <th>Ca sĩ</th>
+            <th>Album</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.Title</td>
+                <td>@s.Artist</td>
+                <td>@s.Album</td>
+                <td>
+                    <a class="btn btn-success btn-sm" href="@Url.Action("Player", new { id = s.SongID })">▶ Nghe</a>
+                    <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", new { id = s.SongID })">Sửa</a>
+                    <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = s.SongID })" onclick="return confirm('Xóa bài hát?');">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

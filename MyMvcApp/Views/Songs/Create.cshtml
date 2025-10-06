@@ -1,0 +1,41 @@
+﻿@model MyMvcApp.Models.Song
+@{
+    ViewData["Title"] = "Thêm bài hát";
+    Layout = "_Layout";
+}
+
+<h2>Thêm bài hát</h2>
+
+<form method="post" asp-action="Create" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">Tiêu đề</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Ca sĩ</label>
+        <input asp-for="Artist" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Chọn file nhạc</label>
+        <input type="file" name="MusicFile" class="form-control" accept=".mp3,.wav" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Cover image</label>
+        <input type="file" name="CoverFile" class="form-control" accept=".jpg,.png,.jpeg" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lời bài hát</label>
+        <textarea asp-for="Lyrics" class="form-control" rows="6"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Hủy</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
